@@ -1,0 +1,19 @@
+services:
+  ollama:
+    build: .
+    container_name: ollama
+    image: ollama/ollama
+    healthcheck:
+      test: ollama --version || exit 1
+      interval: 10s
+    ports:
+      - "11434:11434"
+    # env_file: ollama_rocm_env
+    volumes:
+      - ./ollama:/root/.ollama
+    group_add:
+      - video
+    stdin_open: true
+    tty: true
+    privileged: true
+    restart: unless-stopped
