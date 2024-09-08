@@ -13,13 +13,13 @@ class Ollama_Base():
         self.is_init_need = True
         
         self.init_ollama_model(container_info)
-        
-    def generate_text(self, model_name:str, prompt:str, task:str, max_token=4096) -> dict: 
+        self.container_info = container_info
+    def generate_text(self, model_name:str, prompt:str, max_token=4096) -> dict: 
         
         url = f"http://localhost:{self.port}/api/generate"
         data = {
             "model": model_name,
-            "prompt": prompt+task,
+            "prompt": prompt,
             "options": {
                 "num_ctx": max_token
             }
