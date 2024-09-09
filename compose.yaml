@@ -1,6 +1,6 @@
 services:
   ollama:
-    build: .
+    # build: .
     container_name: ollama
     image: ollama/ollama
     healthcheck:
@@ -17,3 +17,10 @@ services:
     tty: true
     privileged: true
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
