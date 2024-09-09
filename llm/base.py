@@ -5,18 +5,14 @@ import re
 
 
 class Ollama_Base():
-    def __init__(self, gpu, port, sys_promt_dir, container_info:list, is_docker_compose=False) -> None:
-        self.gpu = gpu
-        self.port = port
-        self.sys_prompt_dir = sys_promt_dir
-        self.is_docker_compose = is_docker_compose
+    def __init__(self, container_info:list) -> None:
         self.is_init_need = True
         
         self.init_ollama_model(container_info)
         self.container_info = container_info
-    def generate_text(self, model_name:str, prompt:str, max_token=4096) -> dict: 
+    def generate_text(self, model_name:str, port:int, prompt:str, max_token=4096) -> dict: 
         
-        url = f"http://localhost:{self.port}/api/generate"
+        url = f"http://localhost:{port}/api/generate"
         data = {
             "model": model_name,
             "prompt": prompt,

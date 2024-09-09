@@ -1,5 +1,12 @@
 services:
-  ollama:
+  multiagent:
+    build: .
+    ports:
+      - 8000:8000
+    depends_on:
+      - ollama1
+      - ollama2
+  ollama1:
     # build: .
     container_name: ollama
     image: ollama/ollama
@@ -23,4 +30,29 @@ services:
           devices:
             - driver: nvidia
               device_ids: ["0"]
+              capabilities: [gpu]
+ollama2:
+    # build: .
+    container_name: ollama
+    image: ollama/ollama
+    healthcheck:
+      test: ollama --version || exit 1
+      interval: 10s
+    ports:
+      - "11434:11433"
+    # env_file: ollama_rocm_env
+    volumes:
+      - ./ollama:/root/.ollama
+    group_add:
+      - video
+    stdin_open: true
+    tty: true
+    privileged: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
               capabilities: [gpu]

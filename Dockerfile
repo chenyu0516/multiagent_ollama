@@ -7,3 +7,5 @@ RUN apt-get update && apt-get install git -y && apt-get install curl -y
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8000
+
+RUN python3 app.py
