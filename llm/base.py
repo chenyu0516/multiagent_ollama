@@ -33,7 +33,7 @@ class Ollama_Base():
             response_text = re.findall(pattern, data)
             return ''.join(response_text)
         else:
-            raise f"Error: {response.status_code}, {response.text}"
+            raise RuntimeError(f"Error: {response.status_code}, {response.text}")
     
     # def init_ollama_docker(self) -> None:
     #     # Path to the .sh file you want to execute
@@ -52,7 +52,7 @@ class Ollama_Base():
             result = subprocess.run(['docker', 'compose', 'up'], stderr=subprocess.PIPE, text=True, check=True)
         except subprocess.CalledProcessError as e:
             # Print error message if the script fails
-            print(f"Error occurred: {e.stderr}")
+            raise RuntimeError(f"Error occurred: {e.stderr}")
     
     def init_ollama_model(self, model_name_list:list, method:str):
         # if method == "dokcerfile":
@@ -60,7 +60,7 @@ class Ollama_Base():
         if method == "dockercompose":
             self.init_ollama_docker_compose()
         else:
-            raise "ValueError: method should be either \"dockerfile\" or \"dockercompose\""
+            raise ValueError("ValueError: method should be either \"dockerfile\" or \"dockercompose\"")
         
         for container_info in model_name_list:
             # container_info = [container_name:str, model_name:str]
