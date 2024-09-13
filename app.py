@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import subprocess
 
 from llm import Multiagent
@@ -13,7 +13,8 @@ app = Flask(__name__)
 @app.route('/run-script', methods=['GET'])
 def run_script():
     try:
-        result_dict = multiagent.forward(task="Why the sky is blue?")
+        task = request.args.get('task', default = "Why the sky is blue?")
+        result_dict = multiagent.forward(task=task)
         
         # Return the result as a JSON response
         return jsonify(result_dict), 200
