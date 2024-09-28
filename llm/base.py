@@ -47,20 +47,8 @@ class Ollama_Base():
     #         # Print error message if the script fails
     #         print(f"Error occurred: {e.stderr}")
     
-    def init_ollama_docker_compose(self) -> None:
-        try:
-            result = subprocess.run(['docker', 'compose', 'up'], stderr=subprocess.PIPE, text=True, check=True)
-        except subprocess.CalledProcessError as e:
-            # Print error message if the script fails
-            raise RuntimeError(f"Error occurred: {e.stderr}")
     
-    def init_ollama_model(self, model_name_list:list, method:str):
-        # if method == "dokcerfile":
-        #     self.init_ollama_docker()
-        if method == "dockercompose":
-            self.init_ollama_docker_compose()
-        else:
-            raise ValueError("ValueError: method should be either \"dockerfile\" or \"dockercompose\"")
+    def init_ollama_model(self, model_name_list:list):
         
         for container_info in model_name_list:
             # container_info = [container_name:str, model_name:str]
@@ -83,20 +71,33 @@ class Ollama_Base():
             
     
     def is_model_init(self, contianer_name:str, model_name:str) -> None:
-        try:
-             # Run the docker command to list models
-            result = subprocess.run(
-                ['docker', 'exec', '-it', contianer_name, 'ollama', 'list'],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
-            )
- 
-            # Check if the model name is in the result
-            if model_name in result.stdout:
-                self.is_init_need = False
-            else:
-                self.is_init_need = True
-        
-        except Exception as e:
-            return f"An error occurred: {str(e)}"
+        # # try to test the status of docker daemon
+        # try:
+        #     result = subprocess.run(
+        #         ['docker', '-v'],
+        #         stdout=subprocess.PIPE,
+        #         stderr=subprocess.PIPE,
+        #         text=True
+        #     )
+        #     
+        #     print(result.stdout)
+        # except Exception as e:
+        #     return f"An error occurred: {str(e)}"
+        # try:
+        #      # Run the docker command to list models
+        #     result = subprocess.run(
+        #         ['docker', 'exec', '-it', contianer_name, 'ollama', 'list'],
+        #         stdout=subprocess.PIPE,
+        #         stderr=subprocess.PIPE,
+        #         text=True
+        #     )
+ # 
+        #     # Check if the model name is in the result
+        #     if model_name in result.stdout:
+        #         self.is_init_need = False
+        #     else:
+        #         self.is_init_need = True
+        # 
+        # except Exception as e:
+        #     return f"An error occurred: {str(e)}"
+        return False

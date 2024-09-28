@@ -4,15 +4,15 @@ import subprocess
 from llm import Multiagent
 
 
-container_info = [["ollama1", "llama3.1:8b", 0], ["ollama2", "llama3.1:8b", 1]]
-multiagent = Multiagent(container_info)
 
 app = Flask(__name__)
+    
 
-# Route to return the result of the Python script
 @app.route('/run-script', methods=['GET'])
 def run_script():
     try:
+        container_info = request.args.get('container_info', default=[["ollama1", "llama3.1:70b", 11434], ["ollama1", "llama3.1:70b", 11434]])
+        multiagent = Multiagent(container_info)
         task = request.args.get('task', default = "Why the sky is blue?")
         result_dict = multiagent.forward(task=task)
         
