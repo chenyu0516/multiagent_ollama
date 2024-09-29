@@ -18,10 +18,10 @@ class Multiagent(Ollama_Base):
         general_prompt_ref = REFUTING_PROMPT+task+'\n **Refuting History**:\n'
         general_prompt_sum = SUMMARY_PROMPT+task+'\n **Refuting History**:\n'
         
-        while ('OK' in refuting):
+        while ('OK' not in refuting):
             answer = self.generate_text(self.container_info[0][1],
                                         port=self.container_info[0][2],
-                                       prompt=general_prompt_ans+(refute_history[-6:-1]).join('\n')+'The Refuting:'+refuting,
+                                       prompt=general_prompt_ans+'\n'.join(refute_history[-6:-1])+'\n**The Refuting**:\n'+refuting,
                                        max_token=max_token_refute)
             
             refute_history.append(f"Answer: {answer}")
@@ -29,7 +29,7 @@ class Multiagent(Ollama_Base):
             time.sleep(1)
             refuting = self.generate_text(self.container_info[0][1],
                                           port=self.container_info[0][2],
-                                          prompt=general_prompt_ref+(refute_history[-6:-1]).join('\n')+'\n The Answer:\n'+answer,
+                                          prompt=general_prompt_ref+'\n'.join(refute_history[-6:-1])+'\n**The Answer**:\n'+answer,
                                           max_token=max_token_refute)
             refute_history.append(f"Refuting: {refuting}")
             refute_history_text = self.generate_text(self.container_info[0][1],
@@ -39,7 +39,7 @@ class Multiagent(Ollama_Base):
         time.sleep(1)
         return [self.generate_text(self.container_info[0][1],
                                   port=self.container_info[0][2],
-                                prompt=general_prompt_sum+refute_history_text+'\n The Summary:\n',
+                                prompt=general_prompt_sum+refute_history_text+'\n**The Summary**:\n',
                                 max_token=4096),
                 refute_history
         ]

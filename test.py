@@ -15,6 +15,7 @@ def run():
         # Return the result as a JSON response
         return result_dict, 200
     except Exception as e:
+        print(str(e))
         return {"error": str(e)}, 500
 
 if __name__ == '__main__':
