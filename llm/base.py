@@ -10,8 +10,7 @@ class Ollama_Base():
         
         self.init_ollama_model(container_info)
         self.container_info = container_info
-    def generate_text(self, model_name:str, port:int, prompt:str, max_token=4096) -> dict: 
-        
+    """def generate_text(self, model_name:str, port:int, prompt:str, max_token=4096) -> dict: 
         url = f"http://localhost:{port}/api/generate"
         data = {
             "model": model_name,
@@ -20,9 +19,9 @@ class Ollama_Base():
                 "num_ctx": max_token
             }
         }
-        
+        print("start requesting")
         response = requests.post(url, json=data)
-
+        print(response.status_code)
         # Check the response status and content
         if response.status_code == 200:
             data = (response.text)
@@ -30,10 +29,12 @@ class Ollama_Base():
             pattern = r'"response":"(.*?)"'
 
             # Extract all response values using re.findall
-            response_text = re.findall(pattern, data)
-            return ''.join(response_text)
+            response_text_list = re.findall(pattern, data)
+            response_text = ''.join(response_text_list)
+
+            return response_text
         else:
-            raise RuntimeError(f"Error: {response.status_code}, {response.text}")
+            return 0"""
     
     # def init_ollama_docker(self) -> None:
     #     # Path to the .sh file you want to execute

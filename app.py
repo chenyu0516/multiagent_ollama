@@ -11,7 +11,7 @@ app = Flask(__name__)
 @app.route('/run-script', methods=['GET'])
 def run_script():
     try:
-        container_info = request.args.get('container_info', default=[["ollama1", "llama3.1:70b", 11434], ["ollama1", "llama3.1:70b", 11434]])
+        container_info = request.args.get('container_info', default=[["ollama1", "llama3.1:8b", 11434], ["ollama1", "llama3.1:8b", 11434]])
         multiagent = Multiagent(container_info)
         task = request.args.get('task', default = "Why the sky is blue?")
         result_dict = multiagent.forward(task=task)
