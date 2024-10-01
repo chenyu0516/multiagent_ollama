@@ -10,10 +10,9 @@ class Multiagent(Ollama_Base):
         super(Multiagent, self).__init__(container_info)
         
     def forward(self, task, max_token_refute = 4096):
-        print("start")
         refute_history = []
-        refuting = ''
-        refute_history_text = " "
+        refuting = ""
+        refute_history_text = ""
         general_prompt_ans = ANSWERING_PROMPT+task+'\n **Refuting History**:\n'
         general_prompt_ref = REFUTING_PROMPT+task+'\n **Refuting History**:\n'
         general_prompt_sum = SUMMARY_PROMPT+task+'\n **Refuting History**:\n'
@@ -25,7 +24,6 @@ class Multiagent(Ollama_Base):
                                        max_token=max_token_refute)
             
             refute_history.append(f"Answer: {answer}")
-            print(answer)
             time.sleep(1)
             refuting = self.generate_text(self.container_info[0][1],
                                           port=self.container_info[0][2],
@@ -37,12 +35,13 @@ class Multiagent(Ollama_Base):
                                 prompt=general_prompt_sum+'\n'.join(refute_history[-10:])+'\n The Summary:\n',
                                 max_token=4096)
         time.sleep(1)
-        return [self.generate_text(self.container_info[0][1],
+        return {"result":
+            self.generate_text(self.container_info[0][1],
                                   port=self.container_info[0][2],
                                 prompt=general_prompt_sum+refute_history_text+'\n**The Summary**:\n',
                                 max_token=4096),
-                refute_history
-        ]
+                "refute_history": refute_history
+        }
          
     def generate_text(self, model_name:str, port:int, prompt:str, max_token=4096) -> dict: 
         url = f"http://localhost:{port}/api/generate"
@@ -53,9 +52,7 @@ class Multiagent(Ollama_Base):
                 "num_ctx": max_token
             }
         }
-        print("start requesting")
         response = requests.post(url, json=data)
-        print(response.status_code)
         # Check the response status and content
         if response.status_code == 200:
             data = (response.text)
@@ -69,4 +66,11 @@ class Multiagent(Ollama_Base):
             return response_text
         else:
             return 0
-    
+    def forward_without_refute(self, task):
+        
+        answer = self.generate_text(self.container_info[0][1],
+                                    port=self.container_info[0][2],
+                                   prompt=task,
+                                   max_token=4096)
+        
+        return {"result": answer}
